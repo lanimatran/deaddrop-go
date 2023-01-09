@@ -14,8 +14,6 @@ import (
 // Create a NewUser as authorized by the user 'user'
 func NewUser(user string) {
 	if !db.NoUsers() && !db.UserExists(user) {
-		fmt.Println(db.NoUsers())
-		fmt.Println(db.UserExists(user))
 		log.Fatalf("User not recognized")
 	}
 
