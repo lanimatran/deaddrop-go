@@ -16,6 +16,7 @@ func main() {
 
 	var to, user string
 	var new, send, read, help bool
+	flag.BoolVar(&help, "help", false, "Get help")
 	flag.StringVar(&to, "to", "void", "the username to send data to")
 	flag.StringVar(&user, "user", "void", "the username to retrieve data for")
 	flag.BoolVar(&new, "new", false, "run the utility in add user mode")
