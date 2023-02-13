@@ -6,19 +6,24 @@ import (
 	"log"
 	"os"
 
-	"github.com/andey-robins/deaddrop-go/db"
+	"github.com/lanimatran/deaddrop-go/db"
+	"github.com/lanimatran/deaddrop-go/logging"
+	"github.com/lanimatran/deaddrop-go/session"
 )
 
 // SendMessage takes a destination username and will
 // prompt the user for a message to send to that user
 func SendMessage(to string) {
 	if !db.UserExists(to) {
+		logging.LogMessage(to, "Failed to receive a message")
 		log.Fatalf("Destination user does not exist")
 	}
 
 	message := getUserMessage()
 
-	db.SaveMessage(message, to)
+	db.SaveMessage(session.Encrypt(message), to)
+
+	logging.LogMessage(to, "Succesfully received a message")
 }
 
 // getUserMessage prompts the user for the message to send
