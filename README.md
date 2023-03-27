@@ -23,7 +23,7 @@ Data gets stored into the local database file dd.db. This file will not by synch
 
 ## Logging Strategy
 
-I added a separate package that keeps track of logging. The logging function is pretty simple. It takes username and messages as parameters. And append a log into "logs.txt" detailing the time, user that performed the action, and the result of their action. For example: "2023-02-12 22:29:33.889803 -0700 MST m=+5.916782449	long1	Succesfully received a message". Then, for every important outcome that we want to keep track, we just use that function there with a hard-coded message. Since the scope of this software is small, I figured hard-coded messages were enough. If the software were on a larger scale, we probably can create a database table with messages and maybe an id for each of them, and only reference ids in the code. 
+I added a separate package that keeps track of logging. The logging function is pretty simple. It takes username and messages as parameters. And append a log into "logs.txt" detailing the time, user that performed the action, and the result of their action. For example: "2023-02-12 22:29:33.889803 -0700 MST m=+5.916782449	long1	Succesfully received a message". Then, for every important outcome that we want to keep track, we just use that function there with a hard-coded message. Since the scope of this software is small, I figured hard-coded messages were enough. If the software were on a larger scale, we probably can create a database table with messages and maybe an id for each of them, and only reference ids in the code.
 
 ## Mitigation
 
@@ -34,3 +34,10 @@ I worked on this assignment with Morgan Sinclaire since we already started last 
 
 We ended up going with my plan because after hours of trying to follow his approach, it did not seem to work. To achieve this, i also changed message.go, from retrieving array of strings to array of byte slices to feed directly into the decrypt function. The tutorial we referenced to write these encrypt/decrypt functions is below. We ended up having to change the decrypt function a bit since hex.DecodeString could only take hexadecimal strings and I dont know how to convert raw data to string and then to it. This forces us to change how messages are retrieved from the database as mentioned above as well. Reference:
 https://www.melvinvivas.com/how-to-encrypt-and-decrypt-data-using-aes
+
+
+#MAC Strategy
+To create MAC, I combined 3 components:
+- Message, to make sure that if messages is changed, the hash will not match. This is the main requirement of the first portion
+- Sender, the same logic from previous point. This is the requirement of part 2 where identity of the sender should also be protected from tampering
+- A secret private key that is stored within the source code. This to make sure that even if the attacker has access to the database and have access to information about the sender and message, as well as how the MACs are created, they will still not be able to create another MAC that will pass the check. In another word, MACs cannot be modified. If it's attempted, it will not pass the test
