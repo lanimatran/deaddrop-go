@@ -90,6 +90,18 @@ func saltAndHash(pass []byte) (string, error) {
 	return string(hash), nil
 }
 
+func ProduceMAC(sender string, message string) (string, error) {
+	return saltAndHash([]byte(message + KEY + sender))
+}
+
+func ProduceUnhashedMAC(sender string, message string) []byte {
+	return []byte(message + KEY + sender)
+}
+
+func CompareMACs(hash string, pass []byte) error {
+	return bcrypt.CompareHashAndPassword([]byte(hash), pass)
+}
+
 // Authenticate takes in the username of a user and returns nil
 // if the given password matches the user and an error otherwise
 func Authenticate(user string) error {

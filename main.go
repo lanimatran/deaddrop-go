@@ -61,7 +61,7 @@ func main() {
 	if read {
 		readMode(user)
 	} else if send {
-		sendMode(to)
+		sendMode(user, to)
 	} else if new {
 		newMode(user)
 	}
@@ -71,8 +71,8 @@ func readMode(user string) {
 	read.ReadMessages(user)
 }
 
-func sendMode(to string) {
-	send.SendMessage(to)
+func sendMode(user string, to string) {
+	send.SendMessage(user, to)
 }
 
 func newMode(user string) {

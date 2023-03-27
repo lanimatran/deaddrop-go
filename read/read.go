@@ -7,6 +7,7 @@ import (
 	"github.com/lanimatran/deaddrop-go/db"
 	"github.com/lanimatran/deaddrop-go/logging"
 	"github.com/lanimatran/deaddrop-go/session"
+	"strings"
 )
 
 func ReadMessages(user string) {
@@ -21,9 +22,19 @@ func ReadMessages(user string) {
 		log.Fatalf("Unable to authenticate user")
 	}
 
-	messages := db.GetMessagesForUser(user)
-	for _, message := range messages {
-		fmt.Println(session.Decrypt(message))
+	messages, senders, macs := db.GetMessagesForUser(user)
+	for i, message := range messages {
+		decryptedMessage := strings.TrimSpace(session.Decrypt(message))
+		mac := session.ProduceUnhashedMAC(senders[i], decryptedMessage)
+		err := session.CompareMACs(macs[i], mac)
+		if (err != nil) {
+			fmt.Println("A message is hidden due to not passing integrity check")
+			logging.LogMessage(user, "A read message failed integrity check")
+		} else {
+			fmt.Println("From: " + senders[i])
+			fmt.Println(decryptedMessage)
+		}
+		fmt.Println("==== End of Message ====")
 	}
 
 	logging.LogMessage(user, "Succesfully read messages")
