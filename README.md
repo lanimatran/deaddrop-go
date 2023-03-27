@@ -36,7 +36,8 @@ We ended up going with my plan because after hours of trying to follow his appro
 https://www.melvinvivas.com/how-to-encrypt-and-decrypt-data-using-aes
 
 
-#MAC Strategy
+## MAC Strategy
+
 To create MAC, I combined 3 components:
 - Message, to make sure that if messages is changed, the hash will not match. This is the main requirement of the first portion
 - Sender, the same logic from previous point. This is the requirement of part 2 where identity of the sender should also be protected from tampering
